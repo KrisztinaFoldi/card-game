@@ -5,4 +5,9 @@
         <RootNamespace>card_game</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="EntityFramework" Version="6.4.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-preview.2.20120.8" />
+    </ItemGroup>
+
 </Project>
