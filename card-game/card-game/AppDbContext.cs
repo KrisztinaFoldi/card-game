@@ -16,6 +16,12 @@ namespace card_game
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Card>().Property(p => p.CardId).IsRequired().ValueGeneratedOnAdd();
+            modelBuilder.Entity<User>().HasData
+            (
+                new User {Id = "firstOpponent"},
+                new User {Id = "secondOpponent"}
+            );
+
         }
     }
 }

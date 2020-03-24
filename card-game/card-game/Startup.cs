@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace card_game
 {
@@ -26,6 +28,11 @@ namespace card_game
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ICardService, CardService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseInMemoryDatabase("memory");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
