@@ -7,7 +7,7 @@ namespace card_game.Services
     {
         Task NewGameAsync();
         Task CreateDeckAsync();
-        Task DealAsync(List<User> PlayersInGame);
+        Task<string> DealAsync(List<User> PlayersInGame);
         Task PutDownFourCardAsync(List<User> PlayersInGame, List<Card> CardsToPutDown);
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
+using Microsoft.AspNetCore.Identity;
 
 namespace card_game
 {
@@ -28,6 +29,7 @@ namespace card_game
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            //services.AddIdentity<IdentityUser, IdentityRole>();
             services.AddTransient<ICardService, CardService>();
             services.AddTransient<IUserService, UserService>();
             services.AddDbContext<AppDbContext>(options =>

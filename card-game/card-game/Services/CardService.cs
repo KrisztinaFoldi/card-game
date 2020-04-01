@@ -18,7 +18,7 @@ namespace card_game.Services
         public async Task NewGameAsync()
         {
             await CreateDeckAsync();
-            var Players = await _userService.FindAllPlayers("userIdComingFromHttpContext");
+            var Players = await _userService.FindAllPlayersAsync("userIdComingFromHttpContext");
             await DealAsync(Players);
         }
 
@@ -57,14 +57,15 @@ namespace card_game.Services
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task DealAsync(List<User> PlayersInGame)
+        public async Task<string> DealAsync(List<User> PlayersInGame)
         {
             var Deck = await _appDbContext.Decks.FindAsync(1);
             var random = new Random();
+            var resultString = "";
             
             foreach (var Player in PlayersInGame)
             {
-                var User = await _appDbContext.Users.FindAsync(Player.Id);
+                var User = await _appDbContext.Users.FindAsync(Player.UserId);
                 
                 for (int i = 0; i < 12;)
                 {
@@ -79,18 +80,23 @@ namespace card_game.Services
 
                         Deck.CardsInDeck.Remove(CardToDealToPlayer);
                         i++;
+                        resultString += CardToDealToPlayer.Number.ToString();
+                        resultString += CardToDealToPlayer.Symbol;
+
                     }
+
                 }
             }
-
+            
             await _appDbContext.SaveChangesAsync();
+            return resultString;
         }
 
         public async Task PutDownFourCardAsync(List<User> PlayersInGame, List<Card> CardsToPutDown)
         {
             foreach (var Player in PlayersInGame)
             {
-                if (Player.Id == "firstOpponent" || Player.Id == "secondOpponent")
+                if (Player.UserId == "firstOpponent" || Player.UserId == "secondOpponent")
                 {
                     var cards = Player.CardsInHand;
                     cards.Sort();

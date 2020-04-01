@@ -1,0 +1,15 @@
+
+@model card_game.ViewModels.SignInViewModel
+
+<div>
+    <div>
+        <h2>sign in and start playing</h2>
+    </div>
+    <div>
+        <form asp-controller="Main" asp-action="SignIn" method="post">
+            <label asp-for="@Model.NickName">nick name</label>
+            <input asp-for="@Model.NickName" name="NickName" type="text"/>
+            <button type="submit">start!</button>
+        </form>
+    </div>
+</div>
