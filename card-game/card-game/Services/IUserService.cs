@@ -9,6 +9,7 @@ namespace card_game.Services
     {
         Task<List<User>> FindAllPlayersAsync(string UserId);
         Task CreateUserAsync(SignInViewModel viewModel);
-        Task<string> FindUserIdByNameAsync(string UserName);
+        Task<User> FindUserByNameAsync(string UserName);
+        Task CreateOpponentsAsync();
     }
 }

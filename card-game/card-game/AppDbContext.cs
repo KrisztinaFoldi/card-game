@@ -22,11 +22,11 @@ namespace card_game
             modelBuilder.Entity<User>().HasKey(p => p.UserId);
             modelBuilder.Entity<User>().Property(p => p.UserId).ValueGeneratedOnAdd();
             modelBuilder.Entity<User>().Property(p => p.UserName).IsRequired();
-            modelBuilder.Entity<User>().HasData
-            (
-                new User {UserId = "firstOpponent", UserName = "first" },
-                new User {UserId = "secondOpponent", UserName = "second" }
-            );
+            //modelBuilder.Entity<User>().HasData
+            //(
+            //    new User {UserId = "firstOpponent", UserName = "first" },
+            //    new User {UserId = "secondOpponent", UserName = "second" }
+            //);
 
         }
     }

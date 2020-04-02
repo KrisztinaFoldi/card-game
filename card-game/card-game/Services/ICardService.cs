@@ -5,9 +5,10 @@ namespace card_game.Services
 {
     public interface ICardService
     {
-        Task NewGameAsync();
+        Task<List<string>> NewGameAsync(string UserId);
         Task CreateDeckAsync();
-        Task<string> DealAsync(List<User> PlayersInGame);
+        Task DealAsync(List<User> PlayersInGame);
         Task PutDownFourCardAsync(List<User> PlayersInGame, List<Card> CardsToPutDown);
+        Task<List<string>> ShowPlayersCardsInHandAsync(string UserId);
     }
 }

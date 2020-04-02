@@ -17,37 +17,42 @@ namespace card_game.Services
             //_userManager = userManager;
         }
 
+        public async Task CreateOpponentsAsync()
+        {
+           await _appDbContext.Users.AddAsync(new User { UserId = "firstOpponent", UserName = "first" });
+           await _appDbContext.Users.AddAsync(new User { UserId = "secondOpponent", UserName = "second" });
+           await _appDbContext.SaveChangesAsync();
+        }
 
         public async Task CreateUserAsync(SignInViewModel viewModel)
         { 
         //    var User = new User { UserName = viewModel.NickName };
-            await _appDbContext.Users.AddAsync(new User{UserName = viewModel.NickName });
+            await _appDbContext.Users.AddAsync(new User{UserName = viewModel.UserName });
             await _appDbContext.SaveChangesAsync();
             //var result = await _userManager.CreateAsync(User);
-
     
         }
 
         public async Task<List<User>> FindAllPlayersAsync(string UserId)
         {
-            var Players = new List<User>
-            {
-                await _appDbContext.Users.FindAsync(UserId),
-                await _appDbContext.Users.FindAsync("firstOpponent"),
-                await _appDbContext.Users.FindAsync("secondOpponent")
+            List<User> Players = new List<User>() { 
+             await _appDbContext.Users.FindAsync(UserId),
+             await _appDbContext.Users.FindAsync("firstOpponent"),
+             await _appDbContext.Users.FindAsync("secondOpponent")
             };
-            
+         
+
             return Players;
         }
 
-        public async Task<string> FindUserIdByNameAsync(string UserName)
+        public async Task<User> FindUserByNameAsync(string UserName)
         {
             var User = await _appDbContext.Users.FirstOrDefaultAsync(x =>
             
                 x.UserName == UserName
             );
 
-            return User.UserId;
+            return User;
         }
     }
 }

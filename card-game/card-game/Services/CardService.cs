@@ -15,16 +15,20 @@ namespace card_game.Services
             _userService = userService;
         }
 
-        public async Task NewGameAsync()
+        public async Task<List<string>> NewGameAsync(string UserId)
         {
             await CreateDeckAsync();
-            var Players = await _userService.FindAllPlayersAsync("userIdComingFromHttpContext");
+            await _userService.CreateOpponentsAsync();
+            var Players = await _userService.FindAllPlayersAsync(UserId);
             await DealAsync(Players);
+            return await ShowPlayersCardsInHandAsync(UserId);
+
         }
 
         public async Task CreateDeckAsync()
         {
             var newDeckCreated = new Deck {DeckId = 1};
+            newDeckCreated.CardsInDeck = new List<Card>();
 
             for (var k = 0; k < 2; k++)
             {
@@ -57,39 +61,39 @@ namespace card_game.Services
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<string> DealAsync(List<User> PlayersInGame)
+        public async Task DealAsync(List<User> PlayersInGame)
         {
-            var Deck = await _appDbContext.Decks.FindAsync(1);
+            long deckId = 1;
+            var Deck = await _appDbContext.Decks.FindAsync(deckId);
             var random = new Random();
-            var resultString = "";
+           
             
             foreach (var Player in PlayersInGame)
             {
                 var User = await _appDbContext.Users.FindAsync(Player.UserId);
-                
+                User.CardsInHand = new List<Card>();
+                User.HiddenCards = new List<Card>();
+
                 for (int i = 0; i < 12;)
                 {
-                    var IdOfCardToFind = random.Next(1, 120);
+                    long IdOfCardToFind = random.Next(1, 120);
                     var CardToDealToPlayer = await _appDbContext.Cards.FindAsync(IdOfCardToFind);
                     if (Deck.CardsInDeck.Contains(CardToDealToPlayer))
                     {
-                        if (User.CardsInHand.Count < 9)
+                        if (User.CardsInHand.Count < 8)
                             User.CardsInHand.Add(CardToDealToPlayer);
                         else
                             User.HiddenCards.Add(CardToDealToPlayer);
 
                         Deck.CardsInDeck.Remove(CardToDealToPlayer);
                         i++;
-                        resultString += CardToDealToPlayer.Number.ToString();
-                        resultString += CardToDealToPlayer.Symbol;
-
+                       
                     }
 
                 }
             }
-            
+
             await _appDbContext.SaveChangesAsync();
-            return resultString;
         }
 
         public async Task PutDownFourCardAsync(List<User> PlayersInGame, List<Card> CardsToPutDown)
@@ -119,6 +123,18 @@ namespace card_game.Services
 
             }
         }
-        
+
+        public async Task<List<string>> ShowPlayersCardsInHandAsync(string UserId)
+        {
+            var User = await _appDbContext.Users.FindAsync(UserId);
+            var result = new List<string>();
+            foreach(var Card in User.CardsInHand){
+                var temp = "";
+                temp  += Card.Symbol;
+                temp += Card.Number.ToString();
+                result.Add(temp);
+            }
+            return result;
+        }
     }
 }

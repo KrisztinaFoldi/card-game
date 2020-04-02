@@ -8,6 +8,6 @@ namespace card_game.ViewModels
         [Required]
         [MaxLength(10)]
         [MinLength(3)]
-        public string NickName { get; set; }
+        public string UserName { get; set; }
     }
 }

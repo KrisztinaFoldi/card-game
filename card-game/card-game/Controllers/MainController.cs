@@ -35,14 +35,19 @@ namespace card_game.Controllers
             }
 
             await UserService.CreateUserAsync(signInViewModel);
-            var UserId = await UserService.FindUserIdByNameAsync(signInViewModel.NickName);
-            return RedirectToAction("Game");
+           
+            return RedirectToAction(nameof(MainController.Game), "Main", new { signInViewModel.UserName});
         }
 
-        [HttpGet("/game")]
-        public ActionResult Game()
+        [HttpGet("/game/{UserName}")]
+        public async Task<ActionResult> Game(string UserName)
         {
-            return View();
+
+            var playingVewModel = new PlayingViewModel();
+
+            playingVewModel.User = await UserService.FindUserByNameAsync(UserName);
+            await CardService.NewGameAsync(playingVewModel.User.UserId);
+            return View(playingVewModel);
         }
     }
 }
