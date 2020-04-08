@@ -4,6 +4,6 @@ namespace card_game
     {
         public long CardId { get; set; }
         public int Number { get; set; }
-        public string Symbol { get; set; }
+        public long SymbolId { get; set; }
     }
 }

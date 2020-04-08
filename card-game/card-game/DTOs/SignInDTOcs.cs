@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace card_game.ViewModels
 {
-    public class SignInViewModel
+    public class SignInDTO
     {
         [Required]
         [MaxLength(10)]

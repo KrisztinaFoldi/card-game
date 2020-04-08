@@ -8,7 +8,7 @@ namespace card_game.Services
     public interface IUserService
     {
         Task<List<User>> FindAllPlayersAsync(string UserId);
-        Task CreateUserAsync(SignInViewModel viewModel);
+        Task CreateUserAsync(SignInDTO signInDto);
         Task<User> FindUserByNameAsync(string UserName);
         Task CreateOpponentsAsync();
     }

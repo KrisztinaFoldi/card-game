@@ -15,20 +15,19 @@ namespace card_game.Services
             _userService = userService;
         }
 
-        public async Task<List<string>> NewGameAsync(string UserId)
+        public async Task NewGameAsync(string UserId)
         {
+            await CreateSymbolsAsync();
             await CreateDeckAsync();
             await _userService.CreateOpponentsAsync();
             var Players = await _userService.FindAllPlayersAsync(UserId);
             await DealAsync(Players);
-            return await ShowPlayersCardsInHandAsync(UserId);
-
+            //return await ShowPlayersCardsInHandAsync(UserId);
         }
 
         public async Task CreateDeckAsync()
         {
-            var newDeckCreated = new Deck {DeckId = 1};
-            newDeckCreated.CardsInDeck = new List<Card>();
+            var newDeckCreated = new Deck {DeckId = 1, CardsInDeck = new List<Card>()};
 
             for (var k = 0; k < 2; k++)
             {
@@ -36,20 +35,8 @@ namespace card_game.Services
                 {
                     for (var j = 2; j < 15; j++)
                     {
-                        var newCardToAdd = new Card();
-                        if (i == 0)
-                            newCardToAdd.Symbol = "hearts";
-                        
-                        else if (i == 1)
-                            newCardToAdd.Symbol = "diamonds";
-                        
-                        else if (i == 2)
-                            newCardToAdd.Symbol = "spades";
-                        
-                        else if (i == 3)
-                            newCardToAdd.Symbol = "clubs";
-                        
-                        newCardToAdd.Number = j;
+                        var newCardToAdd = new Card {SymbolId = i + 1, Number = j};
+
                         newDeckCreated.CardsInDeck.Add(newCardToAdd);
                         await _appDbContext.Cards.AddAsync(newCardToAdd);
                        
@@ -87,9 +74,7 @@ namespace card_game.Services
 
                         Deck.CardsInDeck.Remove(CardToDealToPlayer);
                         i++;
-                       
                     }
-
                 }
             }
 
@@ -124,17 +109,30 @@ namespace card_game.Services
             }
         }
 
-        public async Task<List<string>> ShowPlayersCardsInHandAsync(string UserId)
+        public async Task CreateSymbolsAsync()
         {
-            var User = await _appDbContext.Users.FindAsync(UserId);
-            var result = new List<string>();
-            foreach(var Card in User.CardsInHand){
-                var temp = "";
-                temp  += Card.Symbol;
-                temp += Card.Number.ToString();
-                result.Add(temp);
-            }
-            return result;
+            var Hearts = new Symbol { SymbolName = "hearts"};
+            await _appDbContext.Symbols.AddAsync(Hearts);
+            var Diamonds = new Symbol { SymbolName = "diamonds"};
+            await _appDbContext.Symbols.AddAsync(Diamonds);
+            var Spades = new Symbol { SymbolName = "spades"};
+            await _appDbContext.Symbols.AddAsync(Spades);
+            var Clubs = new Symbol { SymbolName = "clubs"};
+            await _appDbContext.Symbols.AddAsync(Clubs);
+            await _appDbContext.SaveChangesAsync();
         }
+
+        //public async Task<List<string>> ShowPlayersCardsInHandAsync(string UserId)
+        //{
+        //    var User = await _appDbContext.Users.FindAsync(UserId);
+        //    var result = new List<string>();
+        //    foreach(var Card in User.CardsInHand){
+        //        var temp = "";
+        //        temp  += Card.Symbol;
+        //        temp += Card.Number.ToString();
+        //        result.Add(temp);
+        //    }
+        //    return result;
+        //}
     }
 }

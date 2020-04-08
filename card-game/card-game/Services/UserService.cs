@@ -24,10 +24,10 @@ namespace card_game.Services
            await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task CreateUserAsync(SignInViewModel viewModel)
+        public async Task CreateUserAsync(SignInDTO signInDto)
         { 
         //    var User = new User { UserName = viewModel.NickName };
-            await _appDbContext.Users.AddAsync(new User{UserName = viewModel.UserName });
+            await _appDbContext.Users.AddAsync(new User{UserName = signInDto.UserName });
             await _appDbContext.SaveChangesAsync();
             //var result = await _userManager.CreateAsync(User);
     
