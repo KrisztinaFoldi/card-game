@@ -11,6 +11,7 @@ namespace card_game.Controllers
     public class GameController : ControllerBase
     {
         private readonly ICardService CardService;
+
         private readonly IUserService UserService;
         //private readonly UserManager<User> UserManager;
 
@@ -18,44 +19,50 @@ namespace card_game.Controllers
         {
             CardService = cardService;
             UserService = userService;
-            //UserManager = userManager;
         }
 
-
-//        [HttpGet]
-//        public ActionResult Home()
-//        {
-//            return View();
-//        }
-
-        [HttpPost]
+        //POST /api/game/sign-in
+        [HttpPost("sign-in")]
         public async Task<ActionResult> SignIn(SignInDTO signInDto)
         {
             if (ModelState.IsValid)
             {
                 await UserService.CreateUserAsync(signInDto);
-                return Ok();
-                
+                return Ok(signInDto);
             }
-            
+
             return BadRequest();
         }
 
-        [HttpGet("/{UserName}")]
-        public async Task<ActionResult> Game([FromRoute]string UserName, PlayDTO playDto)
+        //POST /api/game
+        [HttpPost]
+        public async Task<ActionResult> PlayCards([FromBody] ActionDTO actionDto)
         {
-
-            var playingVewModel = new PlayDTO();
-
-            playingVewModel.User = await UserService.FindUserByNameAsync(UserName);
-            await CardService.NewGameAsync(playingVewModel.User.UserId);
-            return View(playingVewModel);
+            return Ok();
         }
 
-        //[HttpPost("/game/{UserName}")]
-        //public async Task<ActionResult> DropCards(string UserName, PlayingViewModel playingViewModel)
-        //{
 
-        //}
+        //GET /api/game/kriszti
+        [HttpGet("{UserName}")]
+        public async Task<ActionResult> Game([FromRoute] string UserName)
+        {
+            var actionDto = new ActionDTO();
+            var User = await UserService.FindUserByNameAsync(UserName);
+            CardService.NewGameAsync(User.UserId);
+            if (User != null)
+            {
+                actionDto.UserName = User.UserName;
+                actionDto.CardsInHand = User.CardsInHand;
+                return Ok(actionDto);
+            }
+
+            return BadRequest("No user found");
+
+//            var playingVewModel = new PlayDTO();
+//
+//            playingVewModel.User = await UserService.FindUserByNameAsync(UserName);
+//            await CardService.NewGameAsync(playingVewModel.User.UserId);
+//            return View(playingVewModel);
+        }
     }
 }
