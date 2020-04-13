@@ -47,10 +47,11 @@ namespace card_game.Services
 
         public async Task<User> FindUserByNameAsync(string UserName)
         {
-            var User = await _appDbContext.Users.FirstOrDefaultAsync(x =>
-            
-                x.UserName == UserName
-            );
+            var User = await _appDbContext.Users
+                .Include(u => u.CardsInHand)
+                .Include(u => u.HiddenCards)
+                .Include(u => u.CardsOnTheTable)
+                .FirstOrDefaultAsync(x => x.UserName == UserName);
 
             return User;
         }

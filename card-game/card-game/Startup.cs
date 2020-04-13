@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
+using AutoMapper;
+using card_game.Services.Helpers.AutoMapper;
 using Microsoft.AspNetCore.Identity;
 
 namespace card_game
@@ -36,6 +38,8 @@ namespace card_game
             {
                 options.UseInMemoryDatabase("memory");
             });
+            services.SetUpAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

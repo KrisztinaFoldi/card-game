@@ -63,7 +63,7 @@ namespace card_game.Services
 
                 for (int i = 0; i < 12;)
                 {
-                    long IdOfCardToFind = random.Next(1, 120);
+                    long IdOfCardToFind = random.Next(1, 103);
                     var CardToDealToPlayer = await _appDbContext.Cards.FindAsync(IdOfCardToFind);
                     if (Deck.CardsInDeck.Contains(CardToDealToPlayer))
                     {

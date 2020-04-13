@@ -30,11 +30,11 @@ namespace card_game
             modelBuilder.Entity<Symbol>().HasKey(p => p.SymbolId);
             modelBuilder.Entity<Symbol>().Property(p => p.SymbolId).IsRequired().ValueGeneratedOnAdd();
             
-            //modelBuilder.Entity<User>().HasData
-            //(
-            //    new User {UserId = "firstOpponent", UserName = "first" },
-            //    new User {UserId = "secondOpponent", UserName = "second" }
-            //);
+//            modelBuilder.Entity<User>().HasData
+//            (
+//                new User {UserId = "firstOpponent", UserName = "first" },
+//                new User {UserId = "secondOpponent", UserName = "second" }
+//            );
 
         }
     }

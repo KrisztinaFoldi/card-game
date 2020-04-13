@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using AutoMapper;
 using card_game.Services;
 using card_game.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -11,14 +12,14 @@ namespace card_game.Controllers
     public class GameController : ControllerBase
     {
         private readonly ICardService CardService;
-
         private readonly IUserService UserService;
-        //private readonly UserManager<User> UserManager;
+        private readonly IMapper _mapper;
 
-        public GameController(ICardService cardService, IUserService userService)
+        public GameController(ICardService cardService, IUserService userService, IMapper mapper)
         {
             CardService = cardService;
             UserService = userService;
+            _mapper = mapper;
         }
 
         //POST /api/game/sign-in
@@ -28,6 +29,8 @@ namespace card_game.Controllers
             if (ModelState.IsValid)
             {
                 await UserService.CreateUserAsync(signInDto);
+                var User = await UserService.FindUserByNameAsync(signInDto.UserName);
+                await CardService.NewGameAsync(User.UserId);
                 return Ok(signInDto);
             }
 
@@ -46,23 +49,14 @@ namespace card_game.Controllers
         [HttpGet("{UserName}")]
         public async Task<ActionResult> Game([FromRoute] string UserName)
         {
-            var actionDto = new ActionDTO();
             var User = await UserService.FindUserByNameAsync(UserName);
-            CardService.NewGameAsync(User.UserId);
             if (User != null)
             {
-                actionDto.UserName = User.UserName;
-                actionDto.CardsInHand = User.CardsInHand;
+                var actionDto = _mapper.Map<User, ActionDTO>(User);
                 return Ok(actionDto);
             }
 
             return BadRequest("No user found");
-
-//            var playingVewModel = new PlayDTO();
-//
-//            playingVewModel.User = await UserService.FindUserByNameAsync(UserName);
-//            await CardService.NewGameAsync(playingVewModel.User.UserId);
-//            return View(playingVewModel);
         }
     }
 }
